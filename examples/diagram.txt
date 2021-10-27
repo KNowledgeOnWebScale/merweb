@@ -1,0 +1,144 @@
+classDiagram
+  direction BT
+
+  class Item {
+    @type schema:Product
+    String name schema:name 1..*
+    String description schema:description 1..*
+  }
+
+  Item -- CustomerItemOption
+  Item -- SupplierItemOption
+
+  class Customer {
+    @type io:Customer
+    String name schema:name 1..*
+    Address address schema:address
+  }
+
+  Customer -- "1..*" Address
+
+  class Address {
+    @type schema:PostalAddress
+  }
+
+  Customer -- CustomerItemOption
+  Customer -- LateDeliveryPenalty
+  Customer -- CustomerLocation
+
+  class CustomerLocation {
+    @type schema:Place
+    Address address schema:address 1..*
+  }
+
+  class Supplier {
+    @type io:Supplier
+    String name schema:name 1..*
+    SupplierItemLeadTimeOption[] porfolio schema:hasOfferCatalog 1
+    Location[] outbound
+    description("The supplier is the same as vendor.")
+  }
+
+  class SupplierLocation {
+    @type scro:StorageFacility
+    String name schema:name 1..*
+    Customer[] servableCustomers sc:servableCustomer 0..*
+    Supplier[] buyableSuppliers sc:buyableSupplier 0..*
+    String[] supportedItemTypes sc:supportedItem 1..*
+  }
+
+  SupplierLocation -- Supplier
+
+  class CustomerItemOption {
+    Item item
+    Customer customer
+    Model forecastModel
+  }
+
+  class SupplierItemOption {
+    @type schema:Offer
+    Supplier supplier schema:seller 1
+    Item item sc:supportedItem 1
+    Model predictionModel sc:predictionModel 1
+  }
+
+  SupplierItemOption -- Supplier
+
+  class LateDeliveryPenalty {
+    @type schema:Offer
+    Customer customer schema:customer 1
+  }
+
+  class LocationToLocation {
+    @type sc:LocationToLocation
+    String[] replinshmentMethods
+    Location locationFrom
+    Location locationTo
+  }
+
+  LocationToLocation -- Location
+
+  class SupplierItemLocationOption {
+    Location location
+    SupplierItemOption option
+    Double price
+    String quantityRestrictions
+  }
+
+  SupplierItemLocationOption -- SupplierItemOption
+  SupplierItemLocationOption -- Location
+
+  class LocationItemOption {
+    Location location
+    Item item
+    Double inventoryHoldingCosts
+  }
+
+  LocationItemOption -- Item
+  LocationItemOption -- Location
+
+  class Order {
+    OrderItem[] items
+    Customer customer
+  }
+
+  Order -- OrderItem
+
+  class OrderItem {
+    Item item
+    Integer quantity
+  }
+
+  OrderItem -- Item
+
+  Supplier -- Location
+  Supplier -- SupplierItemLeadTimeOption
+
+  class SupplierItemLeadTimeOption {
+    Supplier supplier
+    Item item
+    Integer leadTime
+    Integer minimumOrderQuantity
+    Integer maximumOrderQuantity
+  }
+
+  SupplierItemLeadTimeOption -- Supplier
+  SupplierItemLeadTimeOption -- Item
+
+  class Quotation {
+    Integer leadTime
+    Double distance
+    Integer quantity
+    Item item
+  }
+
+  Quotation -- Item
+
+  class Feedback {
+    Double netOrderCost
+    Integer actualDeliveredQuantity
+    Integer actualDeliveryLeadtime
+    OrderItem orderItem
+  }
+
+  Feedback -- OrderItem
