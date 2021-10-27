@@ -1,7 +1,7 @@
-import { Command } from 'commander';
+import {Command} from 'commander';
 import path from 'path';
-import { promises as fs } from 'fs';
-import getShapes from '../index.js';
+import {promises as fs} from 'fs';
+import parseDiagram from '../index.js';
 
 main();
 
@@ -9,33 +9,48 @@ async function main() {
   const program = new Command();
 
   program
-    .requiredOption('-f, --file <file>', 'File with diagram')
-    .option('-o, --output <output>', 'File where shape is written to')
-    .option('-b, --baseIRI <baseIRI>', 'Base IRI of the shapes', 'ex=http://example.com/');
+    .requiredOption('-f, --file <path>', 'File with diagram')
+    .option('-s, --shapes-output <path>', 'File where shape is written to')
+    .option('-b, --shapes-base-iri <iri>', 'Base IRI of the shapes', 'ex=http://example.com/')
+    .option('-c, --custom-output <path>', 'Base IRI of the shapes', )
+    .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary', );
 
   program.parse(process.argv);
   const options = program.opts();
-
   if (!path.isAbsolute(options.file)) {
     options.file = path.join(process.cwd(), options.file);
   }
 
   const diagram = await fs.readFile(options.file, 'utf-8');
-
-  const shapes = getShapes(diagram, {
-    baseIRI: {
-      prefix: options.baseIRI.split('=')[0],
-      iri: options.baseIRI.split('=')[1]
+  const opt = {
+    shapesBaseIri: {
+      prefix: options.shapesBaseIri.split('=')[0],
+      iri: options.shapesBaseIri.split('=')[1]
     }
-  });
+  };
 
-  if (options.output) {
-    if (!path.isAbsolute(options.output)) {
-      options.output = path.join(process.cwd(), options.output);
+  if (options.customBaseIri) {
+    opt.customBaseIri = {
+      prefix: options.customBaseIri.split('=')[0],
+      iri: options.customBaseIri.split('=')[1]
+    }
+  }
+
+  const {shapes, customVocab} = parseDiagram(diagram, opt);
+
+  printOrWriteToFile(options.shapesOutput, shapes)
+  printOrWriteToFile(options.customOutput, customVocab)
+
+}
+
+function printOrWriteToFile(outputPath, data) {
+  if (outputPath) {
+    if (!path.isAbsolute(outputPath)) {
+      outputPath = path.join(process.cwd(), outputPath);
     }
 
-    fs.writeFile(options.output, JSON.stringify(shapes));
+    fs.writeFile(outputPath, JSON.stringify(data));
   } else {
-    console.dir(shapes, {depth: 10});
+    console.dir(data, {depth: 10});
   }
 }

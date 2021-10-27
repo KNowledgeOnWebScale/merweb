@@ -62,6 +62,8 @@ classDiagram
 
   class CustomerItemOption {
     @type sc:CustomerItemOption
+    @label Customer Item Option
+    @comment This represents a combination of a customer and an item.
 
     Item item sc:supportedItem
     Customer customer schema:customer
@@ -99,6 +101,8 @@ classDiagram
 
   class LocationToLocation {
     @type sc:LocationToLocation
+    @label Location to Location
+    @comment This represents information about transporting items from one location to another.
 
     string[] replenishmentMethods sc:replenishmentMethod 1..*
 
@@ -110,6 +114,8 @@ classDiagram
 
   class SupplierItemLocationOption {
     @type sc:SupplierItemLocationOption
+    @label Supplier Item Location Option
+    @comment This represents a combination of a supplier and an item at a specification location.
 
     double price schema:price 1
     string quantityRestrictions sc:quantityRestrictions 1..*
@@ -123,8 +129,10 @@ classDiagram
 
   class LocationItemOption {
     @type sc:LocationItemOption
+    @label Location Item Option
+    @comment This represents a combination of a location and an item.
 
-    double inventoryHoldingCosts
+    double inventoryHoldingCosts sc:inventoryHoldingCost 1
 
     SupplierLocation location schema:address
     Item item sc:supportedItem
@@ -155,6 +163,8 @@ classDiagram
 
   class SupplierItemLeadTimeOption {
     @type sc:SupplierItemLeadTimeOption
+    @label Supplier Item LeadTime Option
+    @comment This represents a combination of a supplier, an item and a lead time.
 
     integer leadTime sc:leadTime 1
 

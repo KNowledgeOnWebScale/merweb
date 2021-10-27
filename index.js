@@ -1,21 +1,23 @@
 import mermaid from 'mermaid';
 
 function main(input, options) {
+  const {shapesBaseIri, customBaseIri} = options;
   const idToType = {};
   const result = mermaid.parse(input).parser.yy;
   const classes = result.getClasses();
   const relations = result.getRelations();
   const classNames = Object.keys(classes);
   const shapes = [];
+  const customVocab = [];
 
   classNames.forEach(className => {
     const shape = {};
     const data = classes[className];
     // console.log(data);
-    shape['@id'] = options.baseIRI.prefix + ':' + data.id + 'Shape';
+    shape['@id'] = shapesBaseIri.prefix + ':' + data.id + 'Shape';
     shape['_id'] = data.id;
     shape['@type'] = 'NodeShape';
-    parseMembers({members: data.members, shape, relations, id: data.id, idToType});
+    parseMembers({members: data.members, shape, id: data.id, idToType, customBaseIri, customVocab});
     // console.log(JSON.stringify(shape));
     shapes.push(shape);
   });
@@ -49,7 +51,7 @@ function main(input, options) {
     delete shape['_id'];
   })
 
-  const finalJSONLD = {
+  const finalShapes = {
     '@context': {
       '@vocab': 'http://www.w3.org/ns/shacl#',
       schema: 'https://schema.org/',
@@ -61,16 +63,32 @@ function main(input, options) {
     '@graph': shapes
   };
 
-  finalJSONLD['@context'][options.baseIRI.prefix] = options.baseIRI.iri;
+  finalShapes['@context'][shapesBaseIri.prefix] = shapesBaseIri.iri;
 
-  return finalJSONLD;
+  if (customBaseIri) {
+    const finalCustomVocab = {
+      '@context': {
+        '@vocab': customBaseIri.iri,
+        schema: 'https://schema.org/',
+        rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+        rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      },
+      '@graph': customVocab
+    };
+
+    return {shapes: finalShapes, customVocab: finalCustomVocab};
+  } else {
+    return {shapes: finalShapes};
+  }
 }
 
 // console.dir(finalJSONLD, {depth: 10});
 // console.log(JSON.stringify(finalJSONLD));
 
 function parseMembers(options) {
-  const {members, shape, relations, id, idToType} = options;
+  const {members, shape, id, idToType, customBaseIri, customVocab} = options;
+  let typeId;
+
   members.forEach(member => {
     member = member.trim();
     const split = member.split(' ');
@@ -79,12 +97,25 @@ function parseMembers(options) {
     if (split[0] === '@type') {
       shape.targetClass = {'@id': split[1]};
       idToType[id] = split[1];
+
+      if (customBaseIri && split[1].startsWith(customBaseIri.prefix + ':')) {
+        typeId = split[1].replace(customBaseIri.prefix + ':', '');
+        customVocab.push({
+          '@id': typeId,
+          '@type': {'@id': 'rdfs:Class'},
+          'rdfs:subClassOf': {'@id': 'schema:Thing'}
+        });
+      }
+    } else if (split[0] === '@label' && customBaseIri) {
+      addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), typeId, customVocab);
+    } else if (split[0] === '@comment' && customBaseIri) {
+      addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), typeId, customVocab);
     } else if (split.length >= 3) {
       if (!shape.property) {
         shape.property = [];
       }
 
-      const datatype  = getDatatype(split[0]);
+      const datatype = getDatatype(split[0]);
 
       const property = {
         path: {'@id': split[2]},
@@ -110,6 +141,13 @@ function parseMembers(options) {
       }
 
       shape.property.push(property);
+
+      if (customBaseIri && split[2].startsWith(customBaseIri.prefix + ':')) {
+        customVocab.push({
+          '@id': split[2].replace(customBaseIri.prefix + ':', ''),
+          '@type': {'@id': 'rdf:Property'}
+        });
+      }
     } else {
       console.warn(`Member "${member}" is ignored.`);
     }
@@ -188,7 +226,7 @@ function getCardinalityForTwoClasses(options) {
   let i = 0;
 
   while (i < relations.length && !((relations[i].id1 === id1 && relations[i].id2 === id2) || (relations[i].id2 === id1 && relations[i].id1 === id2))) {
-    i ++;
+    i++;
   }
 
   if (i < relations.length) {
@@ -201,6 +239,18 @@ function getCardinalityForTwoClasses(options) {
     return relationTitle === 'none' ? null : relationTitle;
   }
 
+}
+
+function addAttributeToCustomVocabElement(attribute, value, id, customVocab) {
+  let i = 0;
+
+  while (i < customVocab.length && customVocab[i]['@id'] !== id) {
+    i ++;
+  }
+
+  if (i < customVocab.length) {
+    customVocab[i][attribute] = value;
+  }
 }
 
 export default main;
