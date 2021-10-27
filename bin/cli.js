@@ -10,7 +10,8 @@ async function main() {
 
   program
     .requiredOption('-f, --file <file>', 'File with diagram')
-    .option('-o, --output <output>', 'File where shape is written to');
+    .option('-o, --output <output>', 'File where shape is written to')
+    .option('-b, --baseIRI <baseIRI>', 'Base IRI of the shapes', 'ex=http://example.com/');
 
   program.parse(process.argv);
   const options = program.opts();
@@ -21,7 +22,12 @@ async function main() {
 
   const diagram = await fs.readFile(options.file, 'utf-8');
 
-  const shapes = getShapes(diagram);
+  const shapes = getShapes(diagram, {
+    baseIRI: {
+      prefix: options.baseIRI.split('=')[0],
+      iri: options.baseIRI.split('=')[1]
+    }
+  });
 
   if (options.output) {
     if (!path.isAbsolute(options.output)) {

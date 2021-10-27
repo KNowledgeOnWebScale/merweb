@@ -3,8 +3,9 @@ classDiagram
 
   class Item {
     @type schema:Product
-    String name schema:name 1..*
-    String description schema:description 1..*
+
+    string name schema:name 1..*
+    string description schema:description 1..*
   }
 
   Item -- CustomerItemOption
@@ -12,7 +13,9 @@ classDiagram
 
   class Customer {
     @type io:Customer
-    String name schema:name 1..*
+
+    string name schema:name 1..*
+
     Address address schema:address
   }
 
@@ -22,123 +25,172 @@ classDiagram
     @type schema:PostalAddress
   }
 
-  Customer -- CustomerItemOption
-  Customer -- LateDeliveryPenalty
-  Customer -- CustomerLocation
-
   class CustomerLocation {
     @type schema:Place
-    Address address schema:address 1..*
+
+    Address address schema:address
   }
+
+  CustomerLocation -- "1..*" Address
 
   class Supplier {
     @type io:Supplier
-    String name schema:name 1..*
-    SupplierItemLeadTimeOption[] porfolio schema:hasOfferCatalog 1
-    Location[] outbound
+
+    string name schema:name 1..*
+
+    SupplierItemLeadTimeOption[] porfolio schema:hasOfferCatalog
+    SupplierLocation[] outbound schema:fromLocation
     description("The supplier is the same as vendor.")
   }
 
+  Supplier -- "1" SupplierItemLeadTimeOption
+  Supplier -- "1..*" SupplierLocation
+
   class SupplierLocation {
     @type scro:StorageFacility
-    String name schema:name 1..*
-    Customer[] servableCustomers sc:servableCustomer 0..*
-    Supplier[] buyableSuppliers sc:buyableSupplier 0..*
-    String[] supportedItemTypes sc:supportedItem 1..*
+
+    string name schema:name 1..*
+
+    Customer[] servableCustomers sc:servableCustomer
+    Supplier[] buyableSuppliers sc:buyableSupplier
+    Item[] supportedItemTypes sc:supportedItem
   }
 
-  SupplierLocation -- Supplier
+  SupplierLocation -- "0..*" Customer
+  SupplierLocation -- "0..*" Supplier
+  SupplierLocation -- "1..*" Item
 
   class CustomerItemOption {
-    Item item
-    Customer customer
-    Model forecastModel
+    @type sc:CustomerItemOption
+
+    Item item sc:supportedItem
+    Customer customer schema:customer
+    Model forecastModel sc:forecastModel
+  }
+
+  CustomerItemOption -- "1" Item
+  CustomerItemOption -- "1" Customer
+  CustomerItemOption -- "1" Model
+
+  class Model {
+    @type sc:Model
   }
 
   class SupplierItemOption {
     @type schema:Offer
-    Supplier supplier schema:seller 1
+
+    Supplier supplier schema:seller
     Item item sc:supportedItem 1
+
     Model predictionModel sc:predictionModel 1
   }
 
-  SupplierItemOption -- Supplier
+  SupplierItemOption -- "1" Supplier
+  SupplierItemOption -- "1" Item
+  SupplierItemOption -- "1" Model
 
   class LateDeliveryPenalty {
     @type schema:Offer
-    Customer customer schema:customer 1
+
+    Customer customer schema:customer
   }
+
+  LateDeliveryPenalty -- "1" customer
 
   class LocationToLocation {
     @type sc:LocationToLocation
-    String[] replinshmentMethods
-    Location locationFrom
-    Location locationTo
+
+    string[] replenishmentMethods sc:replenishmentMethod 1..*
+
+    SupplierLocation locationFrom schema:fromLocation
+    SupplierLocation locationTo schema:toLocation
   }
 
-  LocationToLocation -- Location
+  LocationToLocation -- "1" SupplierLocation
 
   class SupplierItemLocationOption {
-    Location location
-    SupplierItemOption option
-    Double price
-    String quantityRestrictions
+    @type sc:SupplierItemLocationOption
+
+    double price schema:price 1
+    string quantityRestrictions sc:quantityRestrictions 1..*
+
+    SupplierLocation location schema:address
+    SupplierItemOption option sc:supplierItemOption
   }
 
-  SupplierItemLocationOption -- SupplierItemOption
-  SupplierItemLocationOption -- Location
+  SupplierItemLocationOption -- "1" SupplierItemOption
+  SupplierItemLocationOption -- "1" SupplierLocation
 
   class LocationItemOption {
-    Location location
-    Item item
-    Double inventoryHoldingCosts
+    @type sc:LocationItemOption
+
+    double inventoryHoldingCosts
+
+    SupplierLocation location schema:address
+    Item item sc:supportedItem
   }
 
-  LocationItemOption -- Item
-  LocationItemOption -- Location
+  LocationItemOption -- "1" Item
+  LocationItemOption -- "1" SupplierLocation
 
   class Order {
-    OrderItem[] items
-    Customer customer
+    @type schema:OrderItem
+
+    OrderItem[] items schema:orderedItem
+    Customer customer schema:customer
   }
 
-  Order -- OrderItem
+  Order -- "1..*" OrderItem
+  Order -- "1" Customer
 
   class OrderItem {
-    Item item
-    Integer quantity
+    @type schema:OrderItem
+
+    integer quantity schema:orderQuantity 1
+
+    Item item schema:orderedItem
   }
 
-  OrderItem -- Item
-
-  Supplier -- Location
-  Supplier -- SupplierItemLeadTimeOption
+  OrderItem -- "1" Item
 
   class SupplierItemLeadTimeOption {
-    Supplier supplier
-    Item item
-    Integer leadTime
-    Integer minimumOrderQuantity
-    Integer maximumOrderQuantity
+    @type sc:SupplierItemLeadTimeOption
+
+    integer leadTime sc:leadTime 1
+
+    QuantitativeValue minMaxOrderQuantity sc:quantityRestrictions
+    Supplier supplier sc:supplier
+    Item item sc:supportedItem
   }
 
-  SupplierItemLeadTimeOption -- Supplier
-  SupplierItemLeadTimeOption -- Item
+  SupplierItemLeadTimeOption -- "1" QuantitativeValue
+  SupplierItemLeadTimeOption -- "1" Supplier
+  SupplierItemLeadTimeOption -- "1" Item
+
+  class QuantitativeValue {
+    @type schema:QuantitativeValue
+  }
 
   class Quotation {
-    Integer leadTime
-    Double distance
-    Integer quantity
-    Item item
+    @type frapo:Quotation
+
+    integer leadTime sc:leadTime 1
+    double distance schema:distance 1
+    integer quantity schema:orderQuantity 1
+
+    Item item sc:supportedItem
   }
 
-  Quotation -- Item
+  Quotation -- "1" Item
 
   class Feedback {
-    Double netOrderCost
-    Integer actualDeliveredQuantity
-    Integer actualDeliveryLeadtime
-    OrderItem orderItem
+    @type scro:ReceivingProcess
+
+    double netOrderCost sc:netOrderCost 1
+    integer actualDeliveredQuantity sc:deliveredQuantity 1
+    integer actualDeliveryLeadtime schema:deliveryLeadTime 1
+
+    OrderItem orderItem schema:orderedItem
   }
 
-  Feedback -- OrderItem
+  Feedback -- "1" OrderItem

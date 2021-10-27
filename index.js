@@ -1,22 +1,18 @@
 import mermaid from 'mermaid';
 
-function main(input) {
+function main(input, options) {
   const idToType = {};
-
   const result = mermaid.parse(input).parser.yy;
-// console.log(result);
-
   const classes = result.getClasses();
   const relations = result.getRelations();
   const classNames = Object.keys(classes);
   const shapes = [];
 
-
   classNames.forEach(className => {
     const shape = {};
     const data = classes[className];
     // console.log(data);
-    shape['@id'] = 'ex:' + data.id + 'Shape';
+    shape['@id'] = options.baseIRI.prefix + ':' + data.id + 'Shape';
     shape['_id'] = data.id;
     shape['@type'] = 'NodeShape';
     parseMembers({members: data.members, shape, relations, id: data.id, idToType});
@@ -56,7 +52,6 @@ function main(input) {
   const finalJSONLD = {
     '@context': {
       '@vocab': 'http://www.w3.org/ns/shacl#',
-      ex: 'http://example.com/',
       schema: 'https://schema.org/',
       xsd: 'http://www.w3.org/2001/XMLSchema#',
       io: 'http://www.industrialontologies.org/core#',
@@ -65,6 +60,8 @@ function main(input) {
     },
     '@graph': shapes
   };
+
+  finalJSONLD['@context'][options.baseIRI.prefix] = options.baseIRI.iri;
 
   return finalJSONLD;
 }
@@ -77,7 +74,7 @@ function parseMembers(options) {
   members.forEach(member => {
     member = member.trim();
     const split = member.split(' ');
-    console.log(split);
+    //console.log(split);
 
     if (split[0] === '@type') {
       shape.targetClass = {'@id': split[1]};
