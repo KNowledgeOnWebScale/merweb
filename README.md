@@ -5,11 +5,11 @@ generate SHACL shapes and vocabularies from [Mermaid class diagrams](https://mer
 
 ## Usage
 
-- Install dependencies via `npm i`.
-- Execute tool via `node bin/cli.js -f path/to/diagram -s path/to/jsonld`.
+- Install via `npm i -g merweb`.
+- Execute tool via `merweb -f path/to/diagram -s path/to/jsonld`.
 You can try
 ```bash
-node bin/cli.js -f examples/diagram.txt \
+merweb -f examples/diagram.txt \
   -s shapes.jsonld \
   -b "sc=https://w3id.org/idlab/ns/supply-chain/#" \
   -v "sc=https://w3id.org/idlab/ns/supply-chain/#" \
@@ -26,7 +26,7 @@ You can remove the annotations (lines starting with `@`) from diagrams via the `
 The changed diagram is outputted to the terminal.
 
 ```bash
-node bin/cli.js -f examples/diagram.txt -r
+merweb -f examples/diagram.txt -r
 ```
 
 ## License
