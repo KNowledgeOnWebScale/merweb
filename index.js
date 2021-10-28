@@ -87,7 +87,7 @@ function main(input, options) {
 
 function parseMembers(options) {
   const {members, shape, id, idToType, customBaseIri, customVocab} = options;
-  let typeId;
+  let latestCustomVocabElementId;
 
   members.forEach(member => {
     member = member.trim();
@@ -99,17 +99,17 @@ function parseMembers(options) {
       idToType[id] = split[1];
 
       if (customBaseIri && split[1].startsWith(customBaseIri.prefix + ':')) {
-        typeId = split[1].replace(customBaseIri.prefix + ':', '');
+        latestCustomVocabElementId = split[1].replace(customBaseIri.prefix + ':', '');
         customVocab.push({
-          '@id': typeId,
+          '@id': latestCustomVocabElementId,
           '@type': {'@id': 'rdfs:Class'},
           'rdfs:subClassOf': {'@id': 'schema:Thing'}
         });
       }
     } else if (split[0] === '@label' && customBaseIri) {
-      addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), typeId, customVocab);
+      addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
     } else if (split[0] === '@comment' && customBaseIri) {
-      addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), typeId, customVocab);
+      addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), latestCustomVocabElementId, customVocab);
     } else if (split.length >= 3) {
       if (!shape.property) {
         shape.property = [];
@@ -143,8 +143,9 @@ function parseMembers(options) {
       shape.property.push(property);
 
       if (customBaseIri && split[2].startsWith(customBaseIri.prefix + ':')) {
+        latestCustomVocabElementId = split[2].replace(customBaseIri.prefix + ':', '');
         customVocab.push({
-          '@id': split[2].replace(customBaseIri.prefix + ':', ''),
+          '@id': latestCustomVocabElementId,
           '@type': {'@id': 'rdf:Property'}
         });
       }

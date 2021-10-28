@@ -35,12 +35,12 @@ classDiagram
 
   class Supplier {
     @type io:Supplier
+    @comment The supplier is the same as vendor.
 
     string name schema:name 1..*
 
     SupplierItemLeadTimeOption[] porfolio schema:hasOfferCatalog
     SupplierLocation[] outbound schema:fromLocation
-    description("The supplier is the same as vendor.")
   }
 
   Supplier -- "1" SupplierItemLeadTimeOption
@@ -52,8 +52,16 @@ classDiagram
     string name schema:name 1..*
 
     Customer[] servableCustomers sc:servableCustomer
+    @label servable customer
+    @comment Indicates a customer that you can served.
+
     Supplier[] buyableSuppliers sc:buyableSupplier
+    @label buyable supplier
+    @comment Indicates a supplier that you can buy from.
+
     Item[] supportedItemTypes sc:supportedItem
+    @label supported item
+    @comment Indicates an item that is supported for example by a specific location.
   }
 
   SupplierLocation -- "0..*" Customer
@@ -85,6 +93,8 @@ classDiagram
     Item item sc:supportedItem 1
 
     Model predictionModel sc:predictionModel 1
+    @label prediction model
+    @comment Indicates a prediction model.
   }
 
   SupplierItemOption -- "1" Supplier
@@ -105,6 +115,8 @@ classDiagram
     @comment This represents information about transporting items from one location to another.
 
     string[] replenishmentMethods sc:replenishmentMethod 1..*
+    @label replenishment method
+    @comment Indicates how items are moved from one location to the other.
 
     SupplierLocation locationFrom schema:fromLocation
     SupplierLocation locationTo schema:toLocation
@@ -122,6 +134,8 @@ classDiagram
 
     SupplierLocation location schema:address
     SupplierItemOption option sc:supplierItemOption
+    @label supplier item option
+    @comment Indicates the related supplier item option.
   }
 
   SupplierItemLocationOption -- "1" SupplierItemOption
@@ -133,6 +147,8 @@ classDiagram
     @comment This represents a combination of a location and an item.
 
     double inventoryHoldingCosts sc:inventoryHoldingCost 1
+    @label inventory holding costs
+    @comment Indicates the holding costs for an item.
 
     SupplierLocation location schema:address
     Item item sc:supportedItem
@@ -167,9 +183,17 @@ classDiagram
     @comment This represents a combination of a supplier, an item and a lead time.
 
     integer leadTime sc:leadTime 1
+    @label lead time
+    @comment Indicates the lead time of an item.
 
     QuantitativeValue minMaxOrderQuantity sc:quantityRestrictions
+    @label quantity restrictions
+    @comment Indicates restrictions on the quantity of an item. The object can be a schema:QuantitativeValue.
+
     Supplier supplier sc:supplier
+    @label supplier
+    @comment Indicates the supplier of a SupplierItemLeadTimeOption.
+
     Item item sc:supportedItem
   }
 
@@ -197,7 +221,13 @@ classDiagram
     @type scro:ReceivingProcess
 
     double netOrderCost sc:netOrderCost 1
+    @label net order cost
+    @comment Indicates the net costs of an order.
+
     integer actualDeliveredQuantity sc:deliveredQuantity 1
+    @label delivery quantity
+    @comment Indicates the delivered quantity of an ordered item.
+
     integer actualDeliveryLeadtime schema:deliveryLeadTime 1
 
     OrderItem orderItem schema:orderedItem
