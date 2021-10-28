@@ -130,10 +130,14 @@ function parseMembers(options) {
       };
 
       shape.property.push(property);
-    } else if (split[0] === '@label' && customBaseIri) {
-      addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
+    } else if (split[0] === '@label') {
+      if (customBaseIri) {
+        addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
+      }
     } else if (split[0] === '@comment' && customBaseIri) {
-      addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), latestCustomVocabElementId, customVocab);
+      if (customBaseIri) {
+        addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), latestCustomVocabElementId, customVocab);
+      }
     } else if (split.length >= 3) {
       if (!shape.property) {
         shape.property = [];
