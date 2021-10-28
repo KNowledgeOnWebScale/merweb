@@ -103,7 +103,7 @@ function parseMembers(options) {
         latestCustomVocabElementId = split[1].replace(customBaseIri.prefix + ':', '');
         customVocab.push({
           '@id': latestCustomVocabElementId,
-          '@type': {'@id': 'rdfs:Class'},
+          '@type': 'rdfs:Class',
           'rdfs:subClassOf': {'@id': 'schema:Thing'}
         });
       }
@@ -174,7 +174,7 @@ function parseMembers(options) {
         latestCustomVocabElementId = split[2].replace(customBaseIri.prefix + ':', '');
         customVocab.push({
           '@id': latestCustomVocabElementId,
-          '@type': {'@id': 'rdf:Property'}
+          '@type': 'rdf:Property'
         });
       }
     } else {
