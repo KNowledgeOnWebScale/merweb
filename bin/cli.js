@@ -4,6 +4,7 @@ import {Command} from 'commander';
 import path from 'path';
 import {promises as fs} from 'fs';
 import parseDiagram from '../index.js';
+import removeAnnotations from "../lib/remove-annotations.js";
 
 main();
 
@@ -15,12 +16,19 @@ async function main() {
     .option('-s, --shapes-output <path>', 'File where shape is written to')
     .option('-b, --shapes-base-iri <iri>', 'Base IRI of the shapes', 'ex=http://example.com/')
     .option('-c, --custom-output <path>', 'Base IRI of the shapes',)
-    .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary',);
+    .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary',)
+    .option('-r, --remove-annotations', 'Remove annotations of diagram. Result is written to stdout',);
 
   program.parse(process.argv);
   const options = program.opts();
+
   if (!path.isAbsolute(options.file)) {
     options.file = path.join(process.cwd(), options.file);
+  }
+
+  if (options.removeAnnotations) {
+    await removeAnnotations(options.file);
+    process.exit(0);
   }
 
   const diagram = await fs.readFile(options.file, 'utf-8');

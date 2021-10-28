@@ -10,11 +10,18 @@
   "bin": {
     "merweb": "./bin/cli.js"
   },
-  "keywords": ["mermaid", "shape", "shacl", "vocabulary", "ontology"],
+  "keywords": [
+    "mermaid",
+    "shape",
+    "shacl",
+    "vocabulary",
+    "ontology"
+  ],
   "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
   "license": "MIT",
   "dependencies": {
     "commander": "^8.3.0",
+    "line-reader": "^0.4.0",
     "mermaid": "^8.13.3"
   }
 }

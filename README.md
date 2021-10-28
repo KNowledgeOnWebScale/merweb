@@ -11,14 +11,22 @@ You can try
 ```bash
 node bin/cli.js -f examples/diagram.txt \
   -s shapes.jsonld \
-  -b "sc=https://w3di.org/idlab/ns/supply-chain/#" \
-  -v "sc=https://w3di.org/idlab/ns/supply-chain/#" \
+  -b "sc=https://w3id.org/idlab/ns/supply-chain/#" \
+  -v "sc=https://w3id.org/idlab/ns/supply-chain/#" \
   -c vocab.jsonld
 ```
 
 ## Examples
 
 You can find example diagrams in the folder `examples`.
+
+## Remove annotations from diagrams
+
+You can remove the annotations (lines starting with `@`) via the `-r, --remove-annotations` option. 
+
+```bash
+node bin/cli.js -f examples/diagram.txt -r
+```
 
 ## License
 
