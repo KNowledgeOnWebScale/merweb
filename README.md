@@ -22,7 +22,8 @@ You can find example diagrams in the folder `examples`.
 
 ## Remove annotations from diagrams
 
-You can remove the annotations (lines starting with `@`) via the `-r, --remove-annotations` option. 
+You can remove the annotations (lines starting with `@`) from diagrams via the `-r, --remove-annotations` option.
+The changed diagram is outputted to the terminal.
 
 ```bash
 node bin/cli.js -f examples/diagram.txt -r
