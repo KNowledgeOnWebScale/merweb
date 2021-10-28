@@ -14,8 +14,8 @@ async function main() {
     .requiredOption('-f, --file <path>', 'File with diagram')
     .option('-s, --shapes-output <path>', 'File where shape is written to')
     .option('-b, --shapes-base-iri <iri>', 'Base IRI of the shapes', 'ex=http://example.com/')
-    .option('-c, --custom-output <path>', 'Base IRI of the shapes', )
-    .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary', );
+    .option('-c, --custom-output <path>', 'Base IRI of the shapes',)
+    .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary',);
 
   program.parse(process.argv);
   const options = program.opts();
@@ -40,8 +40,11 @@ async function main() {
 
   const {shapes, customVocab} = parseDiagram(diagram, opt);
 
-  printOrWriteToFile(options.shapesOutput, shapes)
-  printOrWriteToFile(options.customOutput, customVocab)
+  printOrWriteToFile(options.shapesOutput, shapes);
+
+  if (options.customBaseIri) {
+    printOrWriteToFile(options.customOutput, customVocab);
+  }
 
 }
 
