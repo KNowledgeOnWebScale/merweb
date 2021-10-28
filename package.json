@@ -1,18 +1,20 @@
 {
-  "name": "our-mermaid",
+  "name": "merweb",
   "version": "1.0.0",
-  "description": "",
+  "description": "Generate SHACL shapes and vocabularies from Mermaid class diagrams.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "bin": {
+    "merweb": "./bin/cli.js"
+  },
+  "keywords": ["mermaid", "shape", "shacl", "vocabulary", "ontology"],
+  "author": "Pieter Heyvaert (https://pieterheyvaert.com)",
+  "license": "MIT",
   "dependencies": {
     "commander": "^8.3.0",
-    "fs-extra": "^10.0.0",
     "mermaid": "^8.13.3"
   }
 }
