@@ -13,6 +13,7 @@ classDiagram
 
   class Customer {
     @type io:Customer
+    @extraTypes schema:Person schema:Organization 2
 
     string name schema:name 1..*
 
@@ -35,6 +36,7 @@ classDiagram
 
   class Supplier {
     @type io:Supplier
+    @extraTypes schema:Organization
     @comment The supplier is the same as vendor.
 
     string name schema:name 1..*
@@ -48,6 +50,7 @@ classDiagram
 
   class SupplierLocation {
     @type scro:StorageFacility
+    @extraTypes schema:Place
 
     string name schema:name 1..*
 

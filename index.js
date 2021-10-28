@@ -55,6 +55,7 @@ function main(input, options) {
     '@context': {
       '@vocab': 'http://www.w3.org/ns/shacl#',
       schema: 'https://schema.org/',
+      rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
       xsd: 'http://www.w3.org/2001/XMLSchema#',
       io: 'http://www.industrialontologies.org/core#',
       sc: 'https://w3di.org/idlab/ns/supply-chain/#',
@@ -106,6 +107,29 @@ function parseMembers(options) {
           'rdfs:subClassOf': {'@id': 'schema:Thing'}
         });
       }
+    } else if (split[0] === '@extraTypes') {
+      const types = member.replace('@extraTypes ', '').split(' ');
+      if (!shape.property) {
+        shape.property = [];
+      }
+
+      let minCount = types.length + 1;
+
+      if (!isNaN(types[types.length - 1])) {
+        minCount = parseInt(types[types.length - 1]);
+        types.splice(types.length - 1, 1);
+      }
+
+      types.push(idToType[id]);
+
+      const property = {
+        path: 'rdf:type',
+        minCount,
+        name: 'required extra classes',
+        in: {'@list': types.map(a => {return {'@id': a}})}
+      };
+
+      shape.property.push(property);
     } else if (split[0] === '@label' && customBaseIri) {
       addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
     } else if (split[0] === '@comment' && customBaseIri) {
