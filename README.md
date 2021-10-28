@@ -9,7 +9,11 @@ generate SHACL shapes and vocabularies from [Mermaid class diagrams](https://mer
 - Execute tool via `node bin/cli.js -f path/to/diagram -s path/to/jsonld`.
 You can try
 ```bash
-node bin/cli.js -f examples/diagram.txt -s shapes.jsonld -b "sc=https://w3di.org/idlab/ns/supply-chain/#" -v "sc=https://w3di.org/idlab/ns/supply-chain/#" -c vocab.jsonld
+node bin/cli.js -f examples/diagram.txt \
+  -s shapes.jsonld \
+  -b "sc=https://w3di.org/idlab/ns/supply-chain/#" \
+  -v "sc=https://w3di.org/idlab/ns/supply-chain/#" \
+  -c vocab.jsonld
 ```
 
 ## Examples
