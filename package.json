@@ -2,6 +2,7 @@
   "name": "merweb",
   "version": "1.0.0",
   "description": "Generate SHACL shapes and vocabularies from Mermaid class diagrams.",
+  "private": false,
   "main": "index.js",
   "type": "module",
   "scripts": {
