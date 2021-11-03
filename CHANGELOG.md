@@ -13,4 +13,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add customBaseIri to shapes JSON-LD context
 
 
-[1.0.1]: https://github.com/KNowledgeOnWebScale/solid-calendar-store/compare/v1.0.0...v1.0.1
+[1.0.1]: https://github.com/KNowledgeOnWebScale/merweb/compare/v1.0.0...v1.0.1
