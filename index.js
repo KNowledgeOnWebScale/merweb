@@ -67,6 +67,8 @@ function main(input, options) {
   finalShapes['@context'][shapesBaseIri.prefix] = shapesBaseIri.iri;
 
   if (customBaseIri) {
+    finalShapes['@context'][customBaseIri.prefix] = customBaseIri.iri;
+
     const finalCustomVocab = {
       '@context': {
         '@vocab': customBaseIri.iri,
