@@ -71,13 +71,14 @@ function main(input, options) {
 
     const finalCustomVocab = {
       '@context': {
-        '@vocab': customBaseIri.iri,
+        '@vocab': 'http://www.w3.org/2000/01/rdf-schema#',
         schema: 'https://schema.org/',
-        rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
         rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
       },
       '@graph': customVocab
     };
+
+    finalCustomVocab['@context'][customBaseIri.prefix] = customBaseIri.iri;
 
     return {shapes: finalShapes, customVocab: finalCustomVocab};
   } else {
@@ -102,11 +103,11 @@ function parseMembers(options) {
       idToType[id] = split[1];
 
       if (customBaseIri && split[1].startsWith(customBaseIri.prefix + ':')) {
-        latestCustomVocabElementId = split[1].replace(customBaseIri.prefix + ':', '');
+        latestCustomVocabElementId = split[1];
         customVocab.push({
           '@id': latestCustomVocabElementId,
-          '@type': 'rdfs:Class',
-          'rdfs:subClassOf': {'@id': 'schema:Thing'}
+          '@type': 'Class',
+          'subClassOf': {'@id': 'schema:Thing'}
         });
       }
     } else if (split[0] === '@extraTypes') {
@@ -134,11 +135,11 @@ function parseMembers(options) {
       shape.property.push(property);
     } else if (split[0] === '@label') {
       if (customBaseIri) {
-        addAttributeToCustomVocabElement('rdfs:label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
+        addAttributeToCustomVocabElement('label', member.replace('@label ', ''), latestCustomVocabElementId, customVocab);
       }
     } else if (split[0] === '@comment' && customBaseIri) {
       if (customBaseIri) {
-        addAttributeToCustomVocabElement('rdfs:comment', member.replace('@comment ', ''), latestCustomVocabElementId, customVocab);
+        addAttributeToCustomVocabElement('comment', member.replace('@comment ', ''), latestCustomVocabElementId, customVocab);
       }
     } else if (split.length >= 3) {
       if (!shape.property) {
@@ -173,7 +174,7 @@ function parseMembers(options) {
       shape.property.push(property);
 
       if (customBaseIri && split[2].startsWith(customBaseIri.prefix + ':')) {
-        latestCustomVocabElementId = split[2].replace(customBaseIri.prefix + ':', '');
+        latestCustomVocabElementId = split[2];
         customVocab.push({
           '@id': latestCustomVocabElementId,
           '@type': 'rdf:Property'
