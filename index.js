@@ -1,7 +1,7 @@
 import mermaid from 'mermaid';
 
 function main(input, options) {
-  const {shapesBaseIri, customBaseIri} = options;
+  const {shapesBaseIri, customBaseIri, customPrefixes} = options;
   const idToType = {};
   const result = mermaid.parse(input).parser.yy;
   const classes = result.getClasses();
@@ -65,6 +65,9 @@ function main(input, options) {
   };
 
   finalShapes['@context'][shapesBaseIri.prefix] = shapesBaseIri.iri;
+  Object.keys(customPrefixes).forEach(prefix => {
+    finalShapes['@context'][prefix] = customPrefixes[prefix]
+  });
 
   if (customBaseIri) {
     finalShapes['@context'][customBaseIri.prefix] = customBaseIri.iri;
@@ -79,6 +82,9 @@ function main(input, options) {
     };
 
     finalCustomVocab['@context'][customBaseIri.prefix] = customBaseIri.iri;
+    Object.keys(customPrefixes).forEach(prefix => {
+      finalCustomVocab['@context'][prefix] = customPrefixes[prefix]
+    });
 
     return {shapes: finalShapes, customVocab: finalCustomVocab};
   } else {

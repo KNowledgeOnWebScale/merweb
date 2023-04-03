@@ -17,6 +17,7 @@ async function main() {
     .option('-b, --shapes-base-iri <iri>', 'Base IRI of the shapes', 'ex=http://example.com/')
     .option('-c, --custom-output <path>', 'Base IRI of the shapes',)
     .option('-v, --custom-base-iri <iri>', 'Base IRI of custom vocabulary',)
+    .option('-p, --custom-prefixes <iri>', 'Prefixes mapped to IRIs',)
     .option('-r, --remove-annotations', 'Remove annotations of diagram. Result is written to stdout',);
 
   program.parse(process.argv);
@@ -44,6 +45,14 @@ async function main() {
       prefix: options.customBaseIri.split('=')[0],
       iri: options.customBaseIri.split('=')[1]
     }
+  }
+
+  if (options.customPrefixes) {
+    const prefixes = options.customPrefixes.split(";")
+    opt.customPrefixes = {}
+    prefixes.forEach(prefix => {
+      opt.customPrefixes[prefix.split("=")[0]] = prefix.split("=")[1]
+    });
   }
 
   const {shapes, customVocab} = parseDiagram(diagram, opt);
