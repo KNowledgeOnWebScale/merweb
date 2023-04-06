@@ -108,34 +108,27 @@ function parseMembers(options) {
       shape.targetClass = {'@id': split[1]};
       idToType[id] = split[1];
 
-      // able to define extra classes beyond 'type' to create class hierarchy
-      let subClasses = [];
-      if (split.length > 2) {
-        for(let i = 2, size = split.length; i < size ; i++){
-          subClasses.push(split[i]);
-        }
-      }
-
       if (customBaseIri && split[1].startsWith(customBaseIri.prefix + ':')) {
         latestCustomVocabElementId = split[1];
-        if (subClasses.length === 0) { // add default subclassOf definition
           customVocab.push({
             '@id': latestCustomVocabElementId,
             '@type': 'Class',
             'subClassOf': {'@id': 'owl:Thing'}
           });
-        } else { // add custom subClassOf definitions
-          let scListOfMaps = []
-          subClasses.forEach(sc => {
-            scListOfMaps.push({'@id': sc})
-          })
-          customVocab.push({
-            '@id': latestCustomVocabElementId,
-            '@type': 'Class',
-            'subClassOf': {'@list': scListOfMaps}
-          });
-        }
       }
+    } else if (split[0] === '@superTypes') { // always assumes @type has already been defined
+      // able to define extra classes beyond 'type' to create class hierarchy
+      let subClasses = [];
+      for (let i = 1, size = split.length; i < size ; i++) {
+        subClasses.push(split[i]);
+      }
+        
+      customVocab.pop() // remove previous default subClass definition
+      customVocab.push({
+        '@id': latestCustomVocabElementId,
+        '@type': 'Class',
+        'subClassOf': {'@list': subClasses.map(sc => {return {'@id': sc}})}
+      });
     } else if (split[0] === '@extraTypes') {
       const types = member.replace('@extraTypes ', '').split(' ');
       if (!shape.property) {
