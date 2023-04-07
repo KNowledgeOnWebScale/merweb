@@ -113,7 +113,7 @@ function parseMembers(options) {
           customVocab.push({
             '@id': latestCustomVocabElementId,
             '@type': 'Class',
-            'subClassOf': {'@id': 'owl:Thing'}
+            'subClassOf': {'@id': 'schema:Thing'}
           });
       }
     } else if (split[0] === '@superTypes') { // always assumes @type has already been defined
@@ -123,7 +123,7 @@ function parseMembers(options) {
         subClasses.push(split[i]);
       }
         
-      customVocab.pop() // remove previous default subClass definition
+      customVocab.pop() // remove default subClassOf definition
       customVocab.push({
         '@id': latestCustomVocabElementId,
         '@type': 'Class',
