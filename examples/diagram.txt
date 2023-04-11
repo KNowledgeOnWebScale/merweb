@@ -73,7 +73,6 @@ classDiagram
 
   class CustomerItemOption {
     @type sc:CustomerItemOption
-    @superTypes schema:Thing owl:Thing
     @label Customer Item Option
     @comment This represents a combination of a customer and an item.
 
@@ -115,7 +114,6 @@ classDiagram
 
   class LocationToLocation {
     @type sc:LocationToLocation
-    @superTypes schema:Thing owl:Thing
     @label Location to Location
     @comment This represents information about transporting items from one location to another.
 
@@ -131,7 +129,6 @@ classDiagram
 
   class SupplierItemLocationOption {
     @type sc:SupplierItemLocationOption
-    @superTypes schema:Thing owl:Thing
     @label Supplier Item Location Option
     @comment This represents a combination of a supplier and an item at a specification location.
 
@@ -149,7 +146,6 @@ classDiagram
 
   class LocationItemOption {
     @type sc:LocationItemOption
-    @superTypes schema:Thing owl:Thing
     @label Location Item Option
     @comment This represents a combination of a location and an item.
 

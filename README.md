@@ -13,7 +13,16 @@ merweb -f examples/diagram.txt \
   -s shapes.jsonld \
   -b "sc=https://w3id.org/idlab/ns/supply-chain/#" \
   -v "sc=https://w3id.org/idlab/ns/supply-chain/#" \
-  -p "swrl=http://www.w3.org/2003/11/swrl#;owl=http://www.w3.org/2002/07/owl#"
+  -p "swrl=http://www.w3.org/2003/11/swrl#;owl=http://www.w3.org/2002/07/owl#" \
+  -c vocab.jsonld
+```
+or
+```bash
+merweb -f examples/diagram_with_supertypes.txt \
+  -s shapes.jsonld \
+  -b "ex=https://example.org/examples#" \
+  -v "ex=https://example.org/examples#" \
+  -p "swrl=http://www.w3.org/2003/11/swrl#;owl=http://www.w3.org/2002/07/owl#" \
   -c vocab.jsonld
 ```
 
