@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [1.1.0] - 2023-04-12
+
+### Added
+- SubClassOf support
+- Custom prefixes
+
 ## [1.0.3] - 2023-03-08
 
 ### Changed
@@ -23,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add customBaseIri to shapes JSON-LD context
 
 
+[1.1.0]: https://github.com/KNowledgeOnWebScale/merweb/compare/v1.0.3...v1.1.0
 [1.0.3]: https://github.com/KNowledgeOnWebScale/merweb/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/KNowledgeOnWebScale/merweb/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/KNowledgeOnWebScale/merweb/compare/v1.0.0...v1.0.1
