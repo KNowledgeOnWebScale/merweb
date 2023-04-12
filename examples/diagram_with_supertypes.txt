@@ -1,0 +1,22 @@
+classDiagram
+  direction BT
+
+  class Olympian {
+    @type ex:Olympian
+    @superTypes ex:Deity owl:Thing
+  }
+
+  class Titan {
+    @type ex:Titan
+    @superTypes ex:Deity owl:Thing
+  }
+
+  class Human {
+    @type ex:Human
+    @superTypes ex:Mortal owl:Thing
+  }
+
+  class Hero {
+    @type ex:Hero
+    @superTypes ex:Human
+  }

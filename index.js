@@ -1,7 +1,7 @@
 import mermaid from 'mermaid';
 
 function main(input, options) {
-  const {shapesBaseIri, customBaseIri} = options;
+  const {shapesBaseIri, customBaseIri, customPrefixes} = options;
   const idToType = {};
   const result = mermaid.parse(input).parser.yy;
   const classes = result.getClasses();
@@ -65,6 +65,11 @@ function main(input, options) {
   };
 
   finalShapes['@context'][shapesBaseIri.prefix] = shapesBaseIri.iri;
+  if (customPrefixes) {
+    Object.keys(customPrefixes).forEach(prefix => {
+      finalShapes['@context'][prefix] = customPrefixes[prefix]
+    });
+  }
 
   if (customBaseIri) {
     finalShapes['@context'][customBaseIri.prefix] = customBaseIri.iri;
@@ -79,6 +84,11 @@ function main(input, options) {
     };
 
     finalCustomVocab['@context'][customBaseIri.prefix] = customBaseIri.iri;
+    if (customPrefixes) {
+      Object.keys(customPrefixes).forEach(prefix => {
+        finalCustomVocab['@context'][prefix] = customPrefixes[prefix]
+      });
+    }
 
     return {shapes: finalShapes, customVocab: finalCustomVocab};
   } else {
@@ -104,12 +114,25 @@ function parseMembers(options) {
 
       if (customBaseIri && split[1].startsWith(customBaseIri.prefix + ':')) {
         latestCustomVocabElementId = split[1];
-        customVocab.push({
-          '@id': latestCustomVocabElementId,
-          '@type': 'Class',
-          'subClassOf': {'@id': 'schema:Thing'}
-        });
+          customVocab.push({
+            '@id': latestCustomVocabElementId,
+            '@type': 'Class',
+            'subClassOf': {'@id': 'schema:Thing'}
+          });
       }
+    } else if (split[0] === '@superTypes') { // always assumes @type has already been defined
+      // able to define extra classes beyond 'type' to create class hierarchy
+      let subClasses = [];
+      for (let i = 1, size = split.length; i < size ; i++) {
+        subClasses.push(split[i]);
+      }
+        
+      customVocab.pop() // remove default subClassOf definition
+      customVocab.push({
+        '@id': latestCustomVocabElementId,
+        '@type': 'Class',
+        'subClassOf': {'@list': subClasses.map(sc => {return {'@id': sc}})}
+      });
     } else if (split[0] === '@extraTypes') {
       const types = member.replace('@extraTypes ', '').split(' ');
       if (!shape.property) {
