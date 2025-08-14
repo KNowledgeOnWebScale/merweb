@@ -39,7 +39,7 @@ Below you can find a table of these annotations.
 
 | Annotation | Description | Shape | Vocabulary | Existing or new annotation |
 | ---------- | ----------- | ----- | ---------- | --------------- |
-| `@type` | The type of a class | Object of `sh:targetNode` | A `rdfs:Class` | New |
+| `@type` | The type of a class | Object of `sh:targetClass` | A `rdfs:Class` | New |
 | `@superTypes` | The super-types of a class | N/A | Object(s) of `rdfs:subClassOf` | New |
 | `@extraTypes` | The extra types of a class | Object of `sh:property` with `rdf:type` as `sh:path` | A `rdfs:Class` | New |
 | `@label` | The label of a class or property | N/A | Object of `rdfs:label` | New  |
